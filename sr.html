@@ -1,0 +1,78 @@
+<!doctype html>
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Adresse SR</title>
+		<style type="text/css"> 
+		
+	    
+	
+		.entete {text-align :center ; font-size :30px ; background :#BDBDBD ; margin-left : 600px; margin-right : 600px} 
+		.formulaire {color : white ; text-align : center ; font-size : 25px ; background : #088A08; margin-left : 600px; margin-right : 600px  }
+		.affichage {text-align : center ; font-size : 30px ; margin-left : 600px; margin-right : 600px ; border : solid ; border-radius: 30px; border-color : red ; background : #CEF6CE}
+		.inv{background : red ; margin-left : 600px; margin-right : 600px ; color : white ; text-align : center ; font-size : 25px }
+		.val{background : blue ; color : white ; text-align : center ; font-size : 25px; margin-left : 600px; margin-right : 600px}
+		.data {text-align : center ; font-size : 18px ; margin-left : 600px; margin-right : 600px ; border : solid ; border-radius: 15px; border-color : red}
+		</style>
+	</head>
+	
+	<?php 
+
+	
+	function ip_and_masque($ip, $ma) {
+    
+    for ($i = 0; $i < 4; $i++) {
+        
+        
+        $a[$i] = (int) $ip[$i] & (int) $ma[$i];
+    }
+    return $a;
+}
+
+function affiche_adresse($a){
+	for($i = 0; $i<=2 ; $i++){
+		echo $a[$i].".";
+	}
+	echo $a[3];
+}
+	
+		
+	?>
+            
+	<body>	
+	<div class="entete"> TP-Calc-SR </br> BRIK NAIL </div></br>
+	<div class="formulaire"> Entrez une adresse IPv4 (par exemple 192.168.3.12)
+	<form name="nom" method="post" action="TP-calc-SR.php">
+		<input type="text" name="ip" value="<?php if(isset($_POST["ip"])) echo $_POST["ip"] ; else echo "192.168.3.12" ;?>" size="30" maxlength="15" /></br>
+		et un masque en notation décimale pointée (par exemple 255.255.255.248)
+		</br><input type="text" name="masque" value="<?php if(isset($_POST["masque"])) echo $_POST["masque"]; else echo "255.255.255.248"; ?>" size="30" maxlength="15" /></br>
+		<input type="submit" name="action" value="calculer réseau" />
+		 </form></div>
+	<div class="affichage">
+	<?php
+		if (isset($_POST["masque"])){
+			if((masque_en_slash($_POST["masque"])>=0)&&(masque_en_slash($_POST["masque"])<=32)){
+				echo $_POST["masque"]." est valide ! </br>";
+				echo "L'adresse du réseau est : ";
+				$m=explode("." , $_POST["masque"]);
+				$ipp=explode("." , $_POST["ip"]);
+				affiche_adresse(ip_and_masque($ipp, $m));
+				echo "\ ".masque_en_slash($_POST["masque"]);
+				
+			}else{
+				echo $_POST["masque"]." n'est pas valide </br>";
+				echo "il n'y a pas d'adresse de réseau";
+			}
+		}
+		?>
+		
+		
+		</div>
+	<div class="data">Voici ce qui a été transmis au serveur par le formulaire :
+	<?php
+	foreach($_POST as $k => $v) { echo "<br/>$k : $v";}
+	?>
+	</div>
+	</body>
+</html>	
